@@ -121,12 +121,6 @@ calculatorKeys.addEventListener("click", function (e) {
     updateOutput();
     return;
   }
-  if (target.classList.contains("del")) {
-    //console.log("decimal", target.value);
-    del(target.value);
-    updateOutput();
-    return;
-  }
 
   resetCalc(target.value);
   updateOutput();
