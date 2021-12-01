@@ -1,56 +1,48 @@
+import {
+  calc,
+  calculation,
+  resetCalc,
+  decimalDisplay,
+  negDisplay,
+} from "./functions.js";
+
+//Selecting DOM elements
 const output = document.querySelector(".screen__output");
 const calculatorKeys = document.querySelector(".calculator-grid");
 
-const calc = {
-  valueDisplay: "0",
-  firstOperand: null,
-  secondOperand: false,
-  operator: null,
-};
-
 //Functions
 // update the output function
-function updateOutput() {
+const updateOutput = () => {
   output.value = calc.valueDisplay;
-}
+};
 updateOutput();
 
 // Display the digits function
-function digitDisplay(digit) {
-  const { valueDisplay, secondOperand } = calc;
+const digitDisplay = (digit) => {
+  const { valueDisplay, readyForSecondOperand } = calc;
 
-  if (secondOperand === true) {
+  if (readyForSecondOperand === true) {
     calc.valueDisplay = digit;
-    calc.secondOperand = false;
+    calc.readyForSecondOperand = false;
   } else
     calc.valueDisplay = valueDisplay === "0" ? digit : valueDisplay + digit;
 
   console.log(calc);
-}
+};
 
-// Display decimal function
-function decimalDisplay(dot) {
-  if (calc.secondOperand === true) {
-    calc.valueDisplay = "0.";
-    calc.secondOperand = false;
-    return;
-  }
-  if (!calc.valueDisplay.includes(dot)) {
-    return (calc.valueDisplay += dot);
-  }
-}
-
-//Handle the operators
-function operatorInput(nextinput) {
+//Handle the operators and if different operators entered
+const operatorInput = (diffOperator) => {
   let { valueDisplay, firstOperand, operator } = calc;
   let input = parseFloat(valueDisplay);
   console.log(calc);
+
   //conditions
-  if (operator && calc.secondOperand) {
-    calc.operator = nextinput;
+  if (operator && calc.readyForSecondOperand) {
+    calc.operator = diffOperator;
     console.log(calc);
     return;
   }
+
   if (firstOperand === null && !isNaN(input)) {
     calc.firstOperand = input;
   } else if (operator) {
@@ -58,39 +50,18 @@ function operatorInput(nextinput) {
     calc.valueDisplay = `${parseFloat(total.toFixed(8))}`;
     calc.firstOperand = total;
   }
-  calc.secondOperand = true;
-  calc.operator = nextinput;
-}
-
-// Handle Calculations
-function calculation(firstOperand, secondOperand, operator) {
-  if (operator === "+") {
-    return firstOperand + secondOperand;
-  } else if (operator === "-") {
-    return firstOperand - secondOperand;
-  } else if (operator === "x") {
-    return firstOperand * secondOperand;
-  } else if (operator === "÷") {
-    return firstOperand / secondOperand;
-  } else if (operator === "%") {
-    return firstOperand % secondOperand;
-  }
-
-  return secondOperand;
-}
-
-// RESET calculations
-function resetCalc() {
-  calc.valueDisplay = "0";
-  calc.firstOperand = null;
-  calc.secondOperand = false;
-  calc.operator = null;
-  console.log(calc);
-}
+  calc.readyForSecondOperand = true;
+  calc.operator = diffOperator;
+};
 
 // Event Listeners
 
 // Kyes event listener
+/*
+The reason for not choosing all button elemetns for the click event is because 
+all buttons are children of "calculator.grid" element and by knowing that 
+we can use <event delegation> to filter down the <click event> to children elements 
+*/
 calculatorKeys.addEventListener("click", function (e) {
   // Listen to the target element
   const target = e.target;
@@ -118,6 +89,13 @@ calculatorKeys.addEventListener("click", function (e) {
   if (target.classList.contains("decimal")) {
     //console.log("decimal", target.value);
     decimalDisplay(target.value);
+    updateOutput();
+    return;
+  }
+
+  //Check if the Negative button clicked
+  if (target.classList.contains("negative")) {
+    negDisplay(target.value);
     updateOutput();
     return;
   }

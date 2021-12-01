@@ -51,13 +51,23 @@ p {
   button:hover {
     background-color: #a9a9a9;
   }
+
+  // Negative Butotn
+  .negative {
+    background-color: rgb(187, 175, 2);
+    color: #bd3b1b;
+    font-size: 30px;
+    padding: 4px;
+  }
 }
 
+// Clear button
 .span-two {
-  grid-column: span 3;
+  grid-column: span 2;
   color: #bd3b1b;
   background-color: rgb(5, 85, 99);
 }
+// Equal button
 .span-three {
   grid-column: span 1;
   color: #bd3b1b;
